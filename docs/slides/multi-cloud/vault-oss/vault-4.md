@@ -9,8 +9,11 @@ count: false
 ![:scale 15%](https://hashicorp.github.io/field-workshops-assets/assets/logos/logo_vault.png)
 
 ???
+Lab Overview
+* Used Vault CLI, UI, and API to write and read secrets.  
+* And you finished up by starting Vault in Production mode.
 
-* Chapter 4 introduces Vault secrets engines
+Chapter 4 introduces Vault secrets engines
 * It focuses on the KV v2 engine.
 
 ---
@@ -29,10 +32,10 @@ name: vault-secrets-engines-1
 .center[Vault includes many different secrets engines.]
 
 ???
-* Use this screenshot from the Vault UI to talk about Vault's many secrets engines but note that the next slide lists them too.
-* Some are for storing static secrets.
-* Others can dynamically generate secrets such as database and cloud credentials.
-* There is even one called "Transit" that provides encryption as a service.
+Anytime you access any secret from vault you're using a Secret Engine.  
+* Some secrets engines simply store and read static secrets - like k/v
+* Others connect to ext services and generate dynamic creds on demand (such as DB, Cloud Creds) 
+* Other secrets engines provide encryption as a service, PKI, SSH, KMIP, Format-preserving-encryp, Masking, and much more.
 
 ---
 name:vault-secrets-engines-2
@@ -56,6 +59,7 @@ Spend some time pointing out what some of these do:
 * Cloud credentials engines - Generate dynamic, short-lived cloud credentials for major clouds.
 * Active Directory - Vault can rotate AD passwords.
 * Transit - Implement's Vault's encryption-as-a-service. Provides an API that can handle all your encryption and decryption needs, based on policy, so that you don't have to manage a complicated key infrastructure.
+* Custom Plugins
 
 ---
 name: enabling-secrets-engines
@@ -72,9 +76,9 @@ instead of<br>
 
 ???
 
-* Talk about enabling secrets engines.
-* Talk about default and custom paths
-* Explain the examples
+* When we initially deploy vault we need to enable the secrets engines we want to use
+  `vault secrets enable <NAME_OF_ENGINE>`
+* Default Path = `<NAME_OF_ENGINE>`
 
 ---
 name: vault-kv-engine
@@ -87,7 +91,8 @@ name: vault-kv-engine
 * So, you'll need to enable it yourself.
 
 ???
-* We already used Vault's Key/Value (KV) engine in the second challenge of the "Vault Basics" Instruqt track that had been automatically enabled for the "Dev" mode server.
+* We used Vault's Key/Value (KV) engine in the second challenge.
+  * Dev mode automatically enabled this engine for us
 * But we'll need to mount it ourselves for the "Prod" mode server.
 
 ---
@@ -104,24 +109,10 @@ name: vault-kv-commands
 
 ???
 
-* Describe how to mount an instance of the KV v2 secrets engine.
-* Describe the various `vault kv` subcommands.
-
----
-name: lab-vault-basics-challenge-5
-# 👩‍💻 Lab Challenge 4.1: KV v2 Secrets Engine
-* In this lab, you'll enable and use the KV v2 secrets engine.
-* Note that the path will be `kv` instead of `secret`.
-* Instructions:
-  * Click the "Use the KV V2 Secrets Engine" challenge of the "Vault Basics" track.
-  * Then click the green "Start" button.
-  * Follow the challenge's instructions.
-  * Click the green "Check" button when finished.
-
-???
-* Instruct the students to do the "Use the KV V2 Secrets Engine" challenge of the "Vault Basics" track.
-* This challenge has them enable an instance of the KV v2 secrets engine.
-* Emphasize that the path will be `kv` instead of `secret` as was the case for the challenges with the Dev mode server.
+* To enable or **mount** the kv v2 engine we use the enable command
+* `vault secrets enable -version=2 kv`
+* The k/v engine has a command shortcut
+  * vault kv [ list, put, get, delete ]
 
 ---
 name: chapter-4-review-questions
@@ -143,7 +134,7 @@ name: chapter-4-review-answers
 * What is the difference between the two versions of the KV secrets engine?
   * KV V2 supports versioning of secrets.
 * Can an old version of a KV v2 secret be retrieved?
-  * Yes. You did this in Vault UI in the challenge.
+  * Yes. You will this using the Vault UI in the next challenge.
 
 ???
 * Here are the answers to the review questions.

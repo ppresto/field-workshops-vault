@@ -10,7 +10,7 @@ count: false
 
 ???
 
-* Chapter 5 introduces Vault authentication methods
+* In Chapter 5 we will dive a little deeper into Vault's authentication methods
 * It focuses on the Userpass method.
 
 ---
@@ -64,9 +64,9 @@ name:vault-auth-methods-2
 * JWT/OIDC - Allows users to authenticate against an external OpenID Connect provider or with JSON Web Tokens (JWTs)
 * Okta - Allows users to authenticate using Okta single sign-on.
 * AppRole - Allows applications to authenticate in automated workflows using a role and a role ID.
-* AWS - Allows applications on AWS EC2 instances and Lambda functions to authenticate with IAM credentials or EC2 metadata.
+* AWS - Allows applications to authenticate with IAM credentials or EC2 metadata.
+* Google Cloud - Allows applications to authenticate using IAM service accounts or Google Compute Engine (GCE) metadata.
 * Azure - Allows applications associated with Azure Managed Service Identities to authenticate using Azure Active Directory credentials.
-* Google Cloud - Allows applications in GCP to authenticate using Google Cloud IAM service accounts or Google Compute Engine (GCE) metadata.
 * Kubernetes - Allows Kubernetes pods to authenticate with JWT tokens.
 
 ---
@@ -84,9 +84,10 @@ instead of<br>
 
 ???
 
-* Talk about enabling auth methods.
-* Talk about default and custom paths
-* Explain the examples
+* Enabling Authentication Methods is very similar to Secrets Engines
+* Same path options and defaults
+* Explain examples
+
 
 ---
 name: userpass-0
@@ -98,21 +99,6 @@ name: userpass-0
 * The Userpass method allows users to authenticate with username and password managed by Vault.
 * It is not recommended for production, but it's fine for development and lab environments.
 * In the real world you'd probably have Vault use your Active Directory, LDAP, GitHub, or other system of record for authentication by users.
-
----
-name: lab-vault-basics-challenge-6
-# 👩‍💻 Lab Challenge 5.1: Userpass Auth Method
-* In this lab, you'll enable and use the Userpass auth method.
-* Instructions:
-  * Click the "Use the Userpass Auth Method" challenge of the "Vault Basics" track.
-  * Then click the green "Start" button.
-  * Follow the challenge's instructions.
-  * Click the green "Check" button when finished.
-
-???
-* Instruct the students to do the "Use the Userpass Auth Method" challenge of the "Vault Basics" track.
-* This challenge has them enable an instance of the Userpass auth method.
-* It also demonstrates that Vault is "deny by default" since the Userpass user that they create will not have any access to secrets yet.
 
 ---
 name: chapter-5-review-questions

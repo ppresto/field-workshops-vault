@@ -29,6 +29,11 @@ name: vault-policies
 * In addition to specifying paths, policies also specify a set of capabilities for those paths.
 * Policies are written in HashiCorp Configuration Language (HCL).
 
+???
+Vault Polices is the last chapter before our next lab.  
+* Polices are really tying together authentication with the secrets engines
+* User/App - Authenticate - Mapped to a policy that allows **capabilities** for defined **paths**
+* Capabilities: Read, Write, List, Delete
 ---
 name: vault-policy-example
 # A Vault Policy Example
@@ -70,8 +75,11 @@ path "lob_a/dept_1/*" {
 * This policy grants all standard capabilities to all secrets mounted under `lob_a/dept_1/` by using the glob character (`*`).
 
 ???
-* Talk about how many organizations organize Vault secrets by line of business and department.
-* Explain the policy including the glob character and that it can only be used at the end of a path.
+* Vault is very path based.  Like a unix file system.  
+* So when your designing your vault structure it often reflects your organization's structure
+* This can be by line of business, department, team, or even partner or customer.
+* Explain Example
+* Note: the glob character can only be used at the end of a path.
 
 ---
 name: vault-policy-commands
@@ -84,12 +92,48 @@ name: vault-policy-commands
 `vault write auth/userpass/users/joe/policies policies=lob-A-dept-1`
 
 ???
-Describe the most important Vault CLI commands for policies.
+* Vault Policies can be added using the CLI, UI, or API
+* **`vault policy write <policy_name> <file.hcl>`**
+* Once the policy is created we need to associate it to a user or application
+* In this case the Userpass user Joe.
+
+
+---
+name: lab-vault-basics-challenge-5
+# 👩‍💻 Lab Challenge 4.1: KV v2 Secrets Engine
+* In this Challenge, you'll enable and use the KV v2 secrets engine.
+* Note that the path will be `kv` instead of `secret`.
+* Instructions:
+  * Click the "Use the KV V2 Secrets Engine" challenge of the "Vault Basics" track.
+  * Then click the green "Start" button.
+  * Follow the challenge's instructions.
+  * Click the green "Check" button when finished.
+
+???
+* You're going to start where we left off at the "Use the KV V2 Secrets Engine" challenge
+* You will enable an instance of the KV v2 secrets engine.
+* This time the path will be `kv` instead of `secret` as was the case for the challenges with the Dev mode server.
+
+
+---
+name: lab-vault-basics-challenge-6
+# 👩‍💻 Lab Challenge 5.1: Userpass Auth Method
+* In this Challenge, you'll enable and use the Userpass auth method.
+* Instructions:
+  * Click the "Use the Userpass Auth Method" challenge of the "Vault Basics" track.
+  * Then click the green "Start" button.
+  * Follow the challenge's instructions.
+  * Click the green "Check" button when finished.
+
+???
+* You will do the "Use the Userpass Auth Method" challenge next
+* Here you will enable an instance of the Userpass auth method.
+* You can see that Vault is "deny by default" since the Userpass user that they create will not have any access to secrets yet.
 
 ---
 name: lab-vault-basics-challenge-7
 # 👩‍💻 Lab Challenge 6.1: Vault Policies
-* In this lab, you'll use Vault policies to grant different users access to different secrets.
+* In this Challenge, you'll use Vault policies to grant different users access to different secrets.
 * Instructions:
   * Click the "Use Vault Policies" challenge of the "Vault Basics" track.
   * Then click the green "Start" button.
@@ -97,9 +141,9 @@ name: lab-vault-basics-challenge-7
   * Click the green "Check" button when finished.
 
 ???
-* Instruct the students to do the "Use Vault Policies" challenge of the "Vault Basics" track.
-* This challenge has them create a second user and create and associate policies with their 2 users.
-* It then has them valdiate that each user can only access their own secrets.
+* In the last challenge of Lab 1, "Use Vault Policies", you going to associate policies to the users of the auth method you enabled.  
+* These policies will define what secret engine and path the users have access too. 
+* In the end you should be able to verify each user can only access their own secrets.
 
 ---
 name: chapter-6-review-questions
@@ -124,3 +168,4 @@ name: chapter-6-review-answers
 
 ???
 * Here are the answers to the review questions.
+

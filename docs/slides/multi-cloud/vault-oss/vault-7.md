@@ -10,7 +10,14 @@ count: false
 
 ???
 
-* Chapter 7 introduces Vault's Database secrets engine which can dynamically generate short-lived credentials for various databases.
+Quick Recap:  of Vault Basics
+* starting vault server in dev and production mode
+* used the CLI, UI, API
+* enabled the k/v secret engine to create and get secrets
+* enabled the auth method - userpass and created users
+* finally you tied everything together by writing and associating a policy to your users allowing them to access the k/v engine and only manage their own secrets.
+
+* Now Chapter 7 introduces Vault's Database secrets engine which can dynamically generate short-lived credentials for various databases.
 
 ---
 layout: true
@@ -31,9 +38,17 @@ name: dynamic-database-secrets
 * Vault manages the lifecycle of these credentials, automatically deleting them from the database when the TTL expires.
 
 ???
+* Historically we'd use long-lived static creds.  These could end up in vcs and app pkg, provisioning, config mgmt, release mgmt. Eventually these secrets might reside in clear txt on target systems and be easy to compromise. 
+* Apps are bad at keeping secrets secret!  property files, env variables, mem dump, debug logs 
+* reporting service where an even larger group now has access to this sensitive data.
 * Vault's Database secrets engine supports dynamic generation of short-lived credentials (usernames and passwords) for databases.
-* This avoids storing long-lived or permanent credentials on app servers that can easily be compromised.
-* Short-lived credentials are much more secure since ex-employees and others are very unlikely to know the current values.
+  * This avoids storing long-lived credentials at various stages of your application delivery pipeline.  
+  * Now when a cred is leaked through a commit or debug log, by the time someone sees it its already expired. 
+  * When people leave your team or company you dont need to worry about rotating dyn passwd.
+  * With dynamic credentials every node/pod/person gets their own unique set reducing the blast radius of a compromise 
+  * and providing a audit trail ou can use to identify a compromised system
+  * Ops can now revoke a compromised nodes access without impacting service availability
+  * Ops can rotate credentials without impacting service availability
 
 ---
 name: database-engine-plugins
@@ -50,7 +65,12 @@ name: database-engine-plugins
 
 ???
 * The database secrets engine has out-of-the-box plugins for many databases.
+* MongoDB Atlas
+* Redshift
+
 * Custom plugins can also be built.
+https://learn.hashicorp.com/vault/developer/plugin-backends
+
 
 ---
 name: database-engine-workflow
@@ -64,11 +84,11 @@ name: database-engine-workflow
 
 ???
 * This slide lays out the basic workflow used for all of the Datbase secrets engine plugins.
-* All of the plugins work the same basic way.
-* A service account with permissions to manage users on the database server is required by each connection.
-* User creation and revocation SQL statements are specified for roles to determine the permissions og generated users within various databases.
+* They all work the same way.
+* Configure Vault with a service account that has permissions to manage users on the database server and whatever permissions the application or client needs.
+* We create a role in Vault that includes the SQL statements to create & delete users + TTL. 
+* So now... a user/app can request access - dyn user/pass, when ttl expires - user deleted
 * Multiple connections and roles can be created for a single secrets engine instance to support connecting to multiple database servers with different levels of access.
-* The TTL settings can be tuned to suit your needs.
 
 ---
 name: sample-web-app
@@ -148,7 +168,7 @@ vault write lob_a/workshop/database/roles/workshop-app-long \
 #### This defines a role against the "wsmysqldatabase" connection which generates credentials with an initial TTL of 1 hour. But their lifetime can be extended up to 24 hours.
 
 ???
-* We specified a number of things:
+* When we create the role we have to specify a couple things:
     * The creation statements that define the capabilities of the userd that are created
     * The default time to live for generated users
     * The maximum duration for generated users
@@ -210,8 +230,10 @@ name: lab-database-challenge-1
   * Click the green "Check" button when finished.
 
 ???
-* Instruct the students to do the "Enable the Database Secrets Engine" challenge of the "Vault Dynamic Database Credentials" track.
-* This challenge has them enable the Database secrets engine on the path "lob_a/workshop/database" and rotate the root credentials for it.
+* Ok... We are ready for lab 3 :  "Vault Dynamic Database Credentials"
+
+* Enable the Database secrets engine on the path "lob_a/workshop/database"
+* rotate the root credentials for it.
 
 ---
 name: lab-database-challenge-2
@@ -224,8 +246,8 @@ name: lab-database-challenge-2
   * Click the green "Check" button when finished.
 
 ???
-* Instruct the students to do the "Configure the Database Secrets Engine" challenge of the "Vault Dynamic Database Credentials" track.
-* This challenge has them configure a connection and two roles for the engine they created in the previous challenge.
+Configure the Secrets Engine
+* configure a MySQL connection and define two different roles
 * One role will have an initial TTL of 1 hour with a maximum TTL of 24 hours.
 * The other will have an initial TTL of 3 minutes with a maximum TTL of 6 minutes.
 
@@ -240,10 +262,11 @@ name: lab-database-challenge-3
   * Click the green "Check" button when finished.
 
 ???
-* Instruct the students to do the "Generate and Use Dynamic Database Credentials" challenge of the "Vault Dynamic Database Credentials" track.
-* This challenge has them generate short-lived credentials for the MySQL database.
-* They will use the `mysql` utility to connect to the database with those credentials.
-* They will see that the credentials are deleted after 3 minutes and that logging into MySQL with them is blocked.
+Once we have everything configured we are going to start **Generating Dynamic Credentials**
+* You will use the `mysql` utility to verify your creds work.
+* You can test the 3m TTL is working because 
+  * your creds will be deleted 
+  * database access removed
 
 ---
 name: lab-database-challenge-4
@@ -256,7 +279,8 @@ name: lab-database-challenge-4
   * Click the green "Check" button when finished.
 
 ???
-* Instruct the students to do the "Renew and Revoke Database Credentials" challenge of the "Vault Dynamic Database Credentials" track.
+In the last challenge you will "Renew and Revoke Database Credentials"
+
 * This challenge has them extend the liftime of generated credentials with Vault's `sys/leases/renew` endpoint.
 * They will also revoke credentials with Vault's `sys/leases/revoke` endpoint.
 

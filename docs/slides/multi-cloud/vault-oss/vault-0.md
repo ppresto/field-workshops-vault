@@ -9,10 +9,11 @@ count: false
 ![:scale 15%](https://hashicorp.github.io/field-workshops-assets/assets/logos/logo_vault.png)
 
 ???
-This workshop introduces students to the open-source version of Vault.
+Welcome to the Vault OSS Workshop
 
-It is cloud agnostic.
+Usually one of the first questions I get at these workshops is
 
+Can I have a copy of the slides?
 ---
 layout: true
 
@@ -30,22 +31,25 @@ name: Link-to-Slide-Deck
 https://hashicorp.github.io/field-workshops-vault/slides/multi-cloud/vault-oss/index.html
 
 ???
+Here is a link to the slides.  
 
-The link to this slide deck
+Follow along on your computer or bookmark for reference
 
 ---
 name: Introductions
 # Introductions
 
-* Your Name
-* Job Title
-* Secrets Management Experience
-* Favorite Text Editor
+* Patrick Presto
+* Sr. Solutions Engineer
 
 ???
-* Use this slide to introduce yourself, give a little bit of your background story, then go around the room and have all your participants introduce themselves.
-
-* The favorite text editor question is a good ice breaker, but perhaps more importantly it gives you an immediate gauge of how technical your users are.  
+Previously I worked at a fortune 500 as a **Director of the global infrastructure** team.<br>
+**Supported 23 private DC** and given a direction to moving workloads to the 3 major public clouds<br>
+took a **life and shift** approach using our onprem architecture, os images, monitoring solutions, leveraged existing processes, etc...<br>
+It was Painful, we had to redo all of it, and **we learned a lot!** <br>
+One of our **Biggest take aways** was how unprepared we were **to address todays security requirements** for running our services in the cloud<br>
+We took a lot of liberties with our more traditional security model and were forced to mature quickly<br>
+We looked at a couple enterprise tools, We chose 1.  Long story short.  I now work for the company.
 
 ---
 name: Table-of-Contents
@@ -61,7 +65,12 @@ name: Table-of-Contents
 1. Encryption as a Service
 
 ???
-The table of contents for the workshop
+* We will start out with an overview of Hashicorp Vault
+* Vault Basics
+* Different ways to Authenticate
+* Store and Get Secrets
+* Find out what Dynamic Secrets Are?
+* In our final lab we will setup Encryption as a Service
 
 ---
 name: instruqt-tracks

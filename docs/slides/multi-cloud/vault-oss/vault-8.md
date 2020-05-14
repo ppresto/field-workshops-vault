@@ -10,7 +10,9 @@ count: false
 
 ???
 
-* Chapter 8 introduces Vault's Transit secrets engine which functions as Vault's Encryption-as-a-Service (EaaS).
+* Chapter 8 introduces Vault's Encryption-as-a-Service (EaaS).
+* This is our final chapter
+* and we will set this up in the last lab
 
 ---
 layout: true
@@ -30,9 +32,15 @@ name: Vault-Transit-Engine
 * Developers use it to encrypt and decrypt data stored outside of Vault.
 
 ???
-* Let's talk about Vault's Encryption-as-a-Service, the Transit secrets engine.
-* It provides an encryption API & service that are secure, accessible and easy to implement.
-* Instead of forcing developers to learn cryptography, we present them with a familiar API that can be used to encrypt and decrypt data that is stored outside of Vault.
+* What is the Transit secrets engine?
+* It provides an encryption API that is secure , accessible , and easy to implement.
+* Often times well see
+  developers forced to learn and build cryptography into their apps and we find certificates embeded in the app or local to where its running.
+  * These custom solutions take time , hard to maintain , and are rarely implemented securely
+  * So, if attacker gains access to the system they also have the cert to decrypt the data
+* With Vaults EaaS we present you with a familiar API that can be used to encrypt and decrypt data
+* Vault policies can control who or what app can encrypt or decrypt the data.
+* The key used to encrypt the data are stored in vault and not local to the application.
 
 ---
 name: transit-engine-benefits
@@ -45,7 +53,11 @@ name: transit-engine-benefits
 * If an attacker manages to get access to the encrypted data, they will only see ciphertext that is useless without Vault.
 
 ???
-* There are seveal benefits of using the Transit engine.
+There are seveal benefits of using the Transit engine.
+* Encrypt/Decrypt data with a single request to Vaults Certified EaaS API
+* Centralize all your key mgmt
+* leverage a centralized audit log
+* take advantage of automated key rotation & re-wrapping
 
 ---
 name: Vault-Transit-Engine-1
@@ -58,10 +70,8 @@ name: Vault-Transit-Engine-1
 * We'll then run it with Vault enabled and see that new records are encrypted.
 
 ???
-* Discuss the web app we will be using in this chapter's lab.
-* Point out that it will use the same MySQL database from chapter 7.
-* Point out that it will get its MySQL credentials from the Database secrets engine students set up in chapter 7.
-* Indicate that we will first run without Vault and then with it.
+* In this lab we will be using a simple Python web app to see EaaS in action.
+* It will connect the MySQL database we setup in the last lab and use the dynamic secrets engine we configured.
 
 ---
 name: web-app-screenshot
@@ -71,7 +81,7 @@ name: web-app-screenshot
 .center[![:scale 70%](images/transit_app.png)]
 
 ???
-* Show the screenshot of the web app.
+Notice the **Records View** and the **Database View**
 
 ---
 name: web-app-views
@@ -83,6 +93,11 @@ name: web-app-views
 1. **Database View**
   * The Database View displays the raw records in the database, showing what SQL commands would return:
 
+???
+**Records View** : This is the application view showing what an authenticated user will see.  The application will decrypt any encrypted data with vault and display it in clear text here.
+
+**Database View** : This is the Database View showing the raw records as the exist in the DB.  We can use this view to see whats being encrypted.
+
 ---
 name: records-view
 # The Web App's Records View
@@ -91,7 +106,8 @@ name: records-view
 * As we would expect an authorized user is able to see some of the sensitive data because the app has decrypted any encrypted data.
 
 ???
-* Show the records view of the web app.
+* Show the records view of the web app
+* No ciphertext
 
 ---
 name: Vault-Transit-Engine-6
@@ -100,8 +116,8 @@ name: Vault-Transit-Engine-6
 .center[![:scale 60%](images/add_user.png)]
 
 ???
-* Describe the Add User screen that students will use to add new records to the database.
-* Point out again that when Vault is enabled, the records will be encrypted in the database.
+* In the lab you will use the python app to add new records or users to the DB.
+
 
 ---
 name: database-record-without-vault
@@ -111,6 +127,9 @@ name: database-record-without-vault
 * This means that Personally Identifiable Data (PII) is being stored in plain text in our database records.
 * How can we improve this? Let's enable Vault's Transit engine and see.
 
+???
+* Initially Vault will be disabled
+* You will see all your PII data stored as clear text in the DB
 ---
 name: encrypted-record
 # A Database Record Encrypted by Vault
@@ -118,9 +137,11 @@ name: encrypted-record
 .center[![:scale 80%](images/database_view_with_encrypted_record.png)]
 * Note that the birth_date and social_security_number are encrypted.
 ???
-* Show a record from the database encrypted by Vault's Transit engine.
-* Point out that the birth_date and social_security_number field are encrypted as indicated by their starting with "vault:v1".
-* Point out that the "v1" indicates that the first version of the encryption key was used.
+* After we enable vaults transit engine we will add new records with our web app.
+* This time the Database View will show the birth_date and ss# fields are encrypted
+  * Indicated by the cyphertext that starts with vault:v1
+* What do you think the v1 means?
+  * It indicates the first version of the encryption key : v1
 
 ---
 name: encryption-key-rotation
@@ -131,6 +152,11 @@ name: encryption-key-rotation
 * When we rotate the encryption keys, apps that use the Transit engine are unaware of any changes.
 * Data can also be re-encrypted using the `rewrap` endpoint.
 
+???
+* The encryption keys can easily be rotated without applications being impacted.
+* Vault always knows which key to use to decrypt data, and new data will use the latest version
+* Vault can use the latest key to rewrap data that was encrypted with an old key allowing you to remove old keys
+ 
 ---
 name: lab-transit-challenge-1
 # 👩‍💻 Challenge 8.1: Enable the Transit Engine
@@ -143,8 +169,9 @@ name: lab-transit-challenge-1
   * Click the green "Check" button when finished.
 
 ???
-* Instruct the students to do the "Enable the Transit Secrets Engine" challenge of the "Vault Encryption as a Service" track.
-* This challenge has them enable the Transit secrets engine on the path "lob_a/workshop/transit".
+And this brings us to our final Lab:  "Vault Encryption as a Service" 
+* We will Enable the Transit Engine
+* path "lob_a/workshop/transit".
 
 ---
 name: lab-database-challenge-2
@@ -157,8 +184,7 @@ name: lab-database-challenge-2
   * Click the green "Check" button when finished.
 
 ???
-* Instruct the students to do the "Create a Key for the Transit Secrets Engine" challenge of the "Vault Encryption as a Service" track.
-* This challenge has them create an encryption key for use with the Transit engine they enabled in the previous challenge.
+* We'll create an Encryption Key
 
 ---
 name: lab-database-challenge-3
@@ -171,9 +197,8 @@ name: lab-database-challenge-3
   * Click the green "Check" button when finished.
 
 ???
-* Instruct the students to do the "Use the Web App Without Vault" challenge of the "Vault Encryption as a Service" track.
-* This challenge has them use the web application without Vault.
-* Point out that the new record they add during this challenge will nto be encrypted.
+We will get familiar with the web application without Vault.
+* So new records will not be encrypted.
 
 ---
 name: lab-database-challenge-4
@@ -187,9 +212,8 @@ name: lab-database-challenge-4
   * Click the green "Check" button when finished.
 
 ???
-* Instruct the students to do the "Use the Web App With Vault" challenge of the "Vault Encryption as a Service" track.
-* This challenge has them use the web application with Vault.
-* Point out that the new record they add will have sensitive fields encrypted by Vault's Transit engine.
+Then we'll use the web application with Vault enabled.
+* And now new records will have sensitive fields encrypted by Vault's Transit engine.
 
 ---
 name: chapter-8-review-questions

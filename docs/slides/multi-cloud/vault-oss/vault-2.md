@@ -11,7 +11,7 @@ count: false
 ![:scale 15%](https://hashicorp.github.io/field-workshops-assets/assets/logos/logo_vault.png)
 
 ???
-Chapter 2 focuses on interacting with Vault
+How do we interact with Vault
 
 ---
 layout: true
@@ -32,7 +32,9 @@ Vault provides several mechanisms for interacting with it:
 
 ???
 
-* Chapter 2 focuses on interacting with Vault
+* CLI
+* Web UI
+* Rest API
 
 ---
 name: Vault-CLI
@@ -42,7 +44,7 @@ name: Vault-CLI
 * You can download the latest version [here](https://www.vaultproject.io/downloads/).
 
 ???
-* The Vault CLI is distributed as a Go binary.
+* The Vault CLI is distributed as a single static Go binary.
 * It runs on multiple operating systems.
 
 ---
@@ -73,44 +75,6 @@ The `-h`, `-help`, and `--help` flags can be added to get help for any Vault CLI
 Let's discuss some of the basic Vault CLI commands.
 
 ---
-name: getting-started-with-instruqt
-# Doing Labs with Instruqt
-* [Instruqt](https://instruqt.com/) is the platform used for HashiCorp workshops.
-* Instruqt labs are run in "tracks" that are divided into "challenges".
-* If you've never used Instruqt before, start with this [tutorial](https://play.instruqt.com/instruqt/tracks/getting-started-with-instruqt).
-* Otherwise, you can skip to the next slide.
-
-???
-* We'll be using the Instruqt platform for labs in this workshop.
-* Don't worry if you've never used it before: there is an easy tutorial that you can run through in 5-10 minutes.
----
-name: lab-vault-basics-challenge-1
-# 👩‍💻 Lab Challenge 2.1: The Vault CLI
-* In this lab, you'll run some of the Vault CLI commands.
-* You'll do this in the first challenge, "The Vault CLI", of the "Vault Basics" Instruqt track using the URL:
-https://instruqt.com/hashicorp/tracks/vault-basics.
-* You'll continue to work through this Instruqt track in chapters 2-6.
-
-???
-* Now, you can try running some Vault CLI commands yourself in the first challenge of our first Instruqt track in this workshop.
-* We'll be running the Instruqt track "Vault Basics" in the chapters 2-6.
-
----
-name:lab-vault-basics-challenge-1-instructions
-# 👩‍💻 Lab Challenge 2.1: Instructions
-* Start the "Vault Basics" track by clicking the purple "Start" button on the "Vault CLI" challenge of the track.
-* While the challenge is loading, read the displayed text.
-* Click the green "Start" button to start the "Vault CLI" challenge.
-* Follow the instructions on the right side of the challenge.
-* After completing all the steps, click the green "Check" button to see if you did everything right.
-* You can also click the "Check" button for reminders.
-
-???
-* Give the students some instructions for starting their first challenge.
-* This also includes instructions for checking that they did everything right.
-* Students can also click the green "Check" button to get reminderd of what they should do next.
-
----
 name: vault-server-modes
 # Vault Server Modes
 Vault servers can be run in two different modes:
@@ -131,23 +95,12 @@ name: vault-dev-server
 **Please never store actual secrets on a server run in "Dev" mode.**
 
 ???
-* Discuss limitations of Vault's "Dev" mode.
-* Warn students to never store real secrets on a Dev server.
+* "Dev" mode is a really nice feature to have.
+  * Everything runs in memory.  Nothings persistant.  No backend configuration
+  * Great for Dev.  Its very fast to start and test with.
 
----
-name: lab-vault-basics-challenge-2
-# 👩‍💻 Lab Challenge 2.2: Run a Vault "Dev" Server
-* In this lab, you'll run your first Vault server in "Dev" mode.
-* You'll also write your first secret to Vault and use the UI.
-* Instructions:
-  * Click the "Your First Secret" challenge of the "Vault Basics" track.
-  * Then click the green "Start" button.
-  * Follow the challenge's instructions.
-  * Click the green "Check" button when finished.
-
-???
-* Instruct the students to do the "Your First Secret" challenge of the "Vault Basics" track.
-* This challenge has them run a Dev server, write a secret to the KV v2 secrets engine that was automatically enabled, and use the Vault UI.
+  * Not Secure:  Never store real secrets on a Dev server.
+  * The root token is available in your logs, shell history, env
 
 ---
 name: Vault-UI
@@ -155,19 +108,24 @@ name: Vault-UI
 * In order to use the Vault UI, you must sign in.
 * Vault supports multiple authentication methods.
 * A new Vault server will only have the Token auth method enabled.
-* In the challenge you just completed, you used the Token auth method and specified "root" as the token.
+* In the first lab you will use the Token auth method to login.
 
 ???
 
-* Let's talk about the Vault UI a bit, including ways of signing into it.
-* While you used the token "root" in the last challenge, you'll be running a Vault server in "Prod"  mode in the rest of the track and will have to use the token generated when you initialize that server in the next challenge.
+Let's talk about the Vault UI a bit, including ways of signing into it.
+* In the first lab you will run vault in dev mode
+  * where you will define a token with the value of "root" to sign in.
+* Next you'll be running a Vault server in "Prod" mode.  
+  * We will do this for the rest of the track and will have to use the token generated for uswhen you initialize that server in the next challenge.
+* The root token is like the root user in unix.  
+  * It has a root policy associated to it that allows you to define any new policy, secrets engine, or authentication method.
 ---
 name: signing-into-the-vault-ui
 # Signing into the Vault UI
 .center[![:scale 70%](images/vault_login_page.png)]
 
 ???
-* This slide shows a screenshot of the login dialog for the Vault server.
+* This is what you're going to see
 
 ---
 name: welcome-to-vault
@@ -192,7 +150,7 @@ Command:
 curl http://localhost:8200/v1/sys/health | jq
 ```
 ???
-* Let's talk about the Vault HTTP API
+* Everythig uses Vaults Restful API.  The CLI and UI just make API calls.
 
 ---
 name: vault-api-2
@@ -225,22 +183,10 @@ name: vault-api-3
 * This is done with a Vault token that is provided with the `X-Vault-Token` header.
 
 ???
-* Talk about how most Vault HTTP API calls will require authentication with a Vault token.
-
----
-name: lab-vault-basics-challenge-3
-# 👩‍💻 Lab Challenge 2.3: Use the Vault HTTP API
-* In this lab, you'll use the Vault HTTP API.
-* You'll first check the health of your Vault server.
-* You'll then read your `my-first-secret` secret from Vault.
-* Instructions:
-  * Click the challenge called "The Vault API" in the "Vault Basics" track.
-  * Then click the green "Start" button.
-  * Follow the challenge's instructions.
-  * Click the green "Check" button when finished.
-
-???
-* Instruct the students to do the challenge, "The Vault API", in the "Vault Basics" track.
+* Most Vault HTTP API calls require authentication with a Vault token.
+* But you may have noticed the healthcheck endpoint sys/health didn't.  
+  * If vault is unhealthy you want to be able to check its health. 
+  * This is used by LB to efficiently route traffic. 
 
 ---
 name: chapter-2-review-questions

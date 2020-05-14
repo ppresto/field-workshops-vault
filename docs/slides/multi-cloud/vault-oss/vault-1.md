@@ -9,7 +9,7 @@ count: false
 ![:scale 15%](https://hashicorp.github.io/field-workshops-assets/assets/logos/logo_vault.png)
 
 ???
-Chapter 1 introduces Vault
+What is Vault?
 
 ---
 name: hashiCorp-vault-overview
@@ -21,7 +21,12 @@ name: hashiCorp-vault-overview
   * You can also use Vault to generate dynamic short-lived credentials, or encrypt application data on the fly.
 
 ???
-This is meant as a high level overview.  For detailed descriptions or instructions please see the docs, API guide, or learning site:
+Vault is
+* A centralized secrets management solution you can run in any private or public cloud
+* Create / Store Secrets -  and Manage the lifecycle of a secret (rotate, version, revoke, renew)
+* Generate dynamic short-lived credentials
+* Encrypt application data on the fly with a single command or API call
+* 
 * https://www.vaultproject.io/docs/
 * https://www.vaultproject.io/api/
 * https://learn.hashicorp.com/vault/
@@ -34,7 +39,10 @@ layout: false
 .center[Also known as the "Castle and Moat" method.]
 
 ???
-* This picture shows the traditional castle and moat security model.
+Here's a Castle surrounded by a Moat
+* We trust everyone within the castle walls because they protect us
+* Visitors have to go over the draw bridge and through 1 main gate to get in
+* Safe visitors are identified by their name or address
 
 ---
 layout: true
@@ -52,7 +60,12 @@ name: traditional-security-models
 * Resources such as databases were mostly static.  As such rules were based upon IP address, credentials were baked into source code or kept in a static file on disk.
 
 ???
-This slide discusses the traditional security model
+* This is an example of a Perimter based security model 
+  * clearly defined network boundries
+  * A firewall to secure all inbound/outbound traffic
+  * If inside it was assumed one was safe
+  * Identity is based on the static host or IP address
+  * Credentials often found in source control, and static files
 
 ---
 name: problems-with-traditional-security-models
@@ -64,7 +77,15 @@ name: problems-with-traditional-security-models
   * Revoking compromised credentials could break
 
 ???
-* This slide describes some of the problems with the traditional security model.
+* Identifying resources by IP Address doesn't work well in the cloud
+  * Cloud resource have dynamicaly generated IP's and often times they're short lived
+  * Using this Perimeter based security model has short falls
+    * Target - HVAC
+    * Atlantic City Casino - fishcam, firmware, int network
+* Assuming your safe behind the perimeter / castle walls
+  * One often Hard Codes Credentials which leads to many problems
+    * Rotating or Revoking credentials is a breaking change (involves planning)
+    * Shared Services Accounts leak over time and its near impossible to determine who has access
 ---
 name: the-new-way
 layout: false
@@ -73,9 +94,11 @@ layout: false
 .center[No well defined perimeter; security enforced by identity.]
 
 ???
-* These are Mongolian Yurts or "Ger" as they are called locally. Instead of a castle with walls and a drawbridge, a fixed fortress that has an inside and an outside, these people move from place to place, bringing their houses with them.
+* These are Mongolian Yurts or "Ger" as they are called locally. There is no castle with fortified walls to protect them.  They move from place to place, bringing their houses with them.
+* And if you don't think the Nomadic way can be an effective security posture, think about this for a moment. The Mongol military tactics enabled  Genghis Khan to conquer nearly all of continental Asia, the Middle East and parts of eastern Europe. Mongol warriors would typically bring 3-4 horses with them, to move up to 100 miles a day, which was unheard of in the 13th century. They were faster, more adaptable, and more resilient than all their enemies.
+* Services in the cloud move from place to place or host to host.  Maybe even across networks.  They aren't staying in one place, running on 1 IP that we can build fortified walls around.  so we need to adapt and find more resilient method to identify our services
 
-* And if you don't think the Nomadic way can be an effective security posture, think about this for a moment. The Mongol military tactics and organization enabled the Genghis Khan to conquer nearly all of continental Asia, the Middle East and parts of eastern Europe. Mongol warriors would typically bring three or four horses with them, so they could rotate through the horses and go farther. Mongol army units could move up to 100 miles a day, which was unheard of in the 13th century. They were faster, more adaptable, and more resilient than all their enemies.
+
 
 ---
 name: identity-based-security-1
@@ -85,11 +108,13 @@ name: identity-based-security-1
 ]
 
 ???
-* Here we see that Vault has multiple means of authenticating users and applications with its Auth Methods.
-* Vault can manage many types of secrets and excels at generating short-lived, dynmamic secrets.
-* Vault's ACL policies are associated with tokens that users and applications use to access secrets after authenticating.
-* Tokens can only read/write secrets that its policies allow.
-* Click on the link to read a white paper about identity-based security in low trust networks.
+Vault is like a broker in the middle of a transaction 
+1. Goal:  Identify who you are [ like Hotel Check-in Desk ]
+   * It has Many Auth Methods
+   * Ideally you want to leverage your existing Identity Providers
+2. Vault can manage many types of secrets and excels at generating short-lived, dynmamic secrets.
+3. Vault's ACL policies are associated with tokens that users and applications use to access secrets after authenticating.
+
 
 ---
 layout: true
@@ -111,7 +136,14 @@ Vault was designed to address the security needs of modern applications.  It dif
 * Credentials and Entities that can easily be invalidated
 
 ???
-* This slide discusses how Vault is designed for modern applications.
+* Now that we are using identity based rules instead of IP's we can stretch across network perimeters.  We aren't limited by location.
+
+* Now we are using a Token that identifies every human or service (auditable).
+  * It has a TTL (expire, revoke)
+* This token gives us a layer of abstraction allows us to:
+  * rotate backend secrets
+  * enables dynamic short lived credentials
+  * securely support modern applications
 
 ---
 name: secrets-engines
@@ -123,7 +155,7 @@ layout: false
 ???
 * Vault provides many out-of-the-box secrets engines.
 * Additional custom secrets engines can be added by customers.
-* Click on the link to learn more about Vault secrets engines.
+
 
 ---
 name: vault-reference-architecture-1
@@ -133,7 +165,13 @@ name: vault-reference-architecture-1
 ]
 
 ???
-* Click the link to learn more about the internal's of Vault's architecture.
+* There is a clear seperation of components that are inside or outside the security barrier.
+* HTTPS API   ,  Storage Backend (persist encrypted secrets)
+* Barrier contains Audit devices, auth methods, secret engines, & policies
+
+When init started vault is sealed.  Needs unseal key/s.  Once unsealed...
+  *  Can decrypt storage backend data
+  *  Can load audit dev, auth, engines, and polices
 
 ---
 name: vault-reference-architecture-2
@@ -143,7 +181,11 @@ name: vault-reference-architecture-2
 ]
 
 ???
-* Vault allows multiple servers to be combined in a highly available cluster within a single cloud region or physical data center.
+Most teams running vault in a production environment have a design similar to this.
+* 3 node vault cluster (1 active, 2 standby).  Yes HA, No Scalability
+* HA Backend like consul
+* New in 1.4 Integrated storage
+  
 * Click on the link to learn more about Vault's high availability in a single cluster.
 
 ---
@@ -154,9 +196,11 @@ name: vault-reference-architecture-3
 ]
 
 ???
-* Vault Enterprise supports replication between clusters across regions and data centers.
-* It supports Disaster Recovery and Performance replication.
-* These can be used together.
+As Services depend more and more on vault you may need to address things like DR and Multi Region Clusters which are both Enterprise features
+
+* DR is pretty self explanitory - Take for example the Vault cluster here in California
+* As you grow to multiple data centers
+  * Active / Active - Performance Replication
 * Click the link to learn more about Vault's replication.
 
 ---
