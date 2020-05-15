@@ -115,8 +115,7 @@ name: Vault-UI
 Let's talk about the Vault UI a bit, including ways of signing into it.
 * In the first lab you will run vault in dev mode
   * where you will define a token with the value of "root" to sign in.
-* Next you'll be running a Vault server in "Prod" mode.  
-  * We will do this for the rest of the track and will have to use the token generated for uswhen you initialize that server in the next challenge.
+
 * The root token is like the root user in unix.  
   * It has a root policy associated to it that allows you to define any new policy, secrets engine, or authentication method.
 ---

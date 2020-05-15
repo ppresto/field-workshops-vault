@@ -169,8 +169,8 @@ vault write lob_a/workshop/database/roles/workshop-app-long \
 
 ???
 * When we create the role we have to specify a couple things:
-    * The creation statements that define the capabilities of the userd that are created
-    * The default time to live for generated users
+    * The creation statements that defines how our dynamic user will be created
+    * The default time to live for the generated users
     * The maximum duration for generated users
 
 ---

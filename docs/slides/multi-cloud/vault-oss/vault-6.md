@@ -145,27 +145,3 @@ name: lab-vault-basics-challenge-7
 * These policies will define what secret engine and path the users have access too. 
 * In the end you should be able to verify each user can only access their own secrets.
 
----
-name: chapter-6-review-questions
-# 📝 Chapter 6 Review
-* Does Vault grant access to secrets by default?
-* What are the policy capabilities that correspond to HTTP verbs?
-* What CLI command can be used to add a policy to Vault?
-
-???
-* Let's review what we learned in this chapter.
-
----
-name: chapter-6-review-answers
-# 📝 Chapter 6 Review
-
-* Does Vault grant access to secrets by default?
-  * No
-* What are the policy capabilities that correspond to HTTP verbs?
-  * `create`, `read`, `update`, `delete`, and `list`
-* What CLI command can be used to add a policy to Vault?
-  * `vault policy write`
-
-???
-* Here are the answers to the review questions.
-
